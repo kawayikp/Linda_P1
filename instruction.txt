@@ -1,0 +1,168 @@
+Yue Liu
+yliu4@scu.edu
+
+
+This Readme file includes
+1. Submission Files
+2. Program Running Instruction
+3. Error Handling
+4. Other Feature
+5. Modular design
+6. file/directory organizing
+
+
+=================================================================
+
+- 1 - File included
+Client.java
+Host.java
+InputOutputController.java
+Message.java
+MessageBuilder.java
+P1.java
+Server.java
+ServerThread.java
+Tuple.java
+
+
+- 2 - How to run the programm
+1> SSH to design center
+	ssh yliu3@129.210.16.85
+	ssh yliu3@129.210.16.88
+	ssh yliu3@129.210.16.91
+
+2>	compile 
+	javac *.java
+
+3> 	start the programm in distributed system
+	machine1:	[yliu3@linux60822 P1]$ java P1 H0
+				129.210.16.92 at port number:44271
+
+	machine2:	[yliu3@linux60815 P1]$ java P1 H1
+				129.210.16.85 at port number:41472
+
+4> 	select one as the master, and add other hosts
+	add (H1, 129.210.16.85, 41472)
+
+5> 	send requests
+	there are 3 types of request:
+		- out(<tuple>): add the tuple to a host
+		- rd(<tuple>):	read the tuple from a host
+		- in(<tuple>):	read and move the tuple from a host
+	there are 2 types of <tuple>
+		- exact tuple: used for out, rd and in
+		- variable type : tuple field with "? variableName : type" 
+			which is used for type variable matching, used for rd and in
+
+6> example
+	- start program
+	machine1 	[yliu3@linux60815 P1]$ java P1 H0
+				H0 at 129.210.16.85 : 45853
+	machine2 	yliu3@linux60822 P1]$ java P1 H1
+				H1 at 129.210.16.92 : 34098
+
+	- select master and add hosts
+	machine1	linda>add (H1, 129.210.16.92, 34098)
+				Client[ADD]: Add hosts
+				Client[ADD]: Nets = {1=H1, 0=H0}
+
+	machine2	ServerThread[ADD]: Added hosts on H1
+				ServerThread[ADD]: Nets = {1=H1, 0=H0}
+
+	- out tuple
+	machine1 	linda>out (1)
+				Client[OUT]: Put tuple on H1
+
+	machine2	ServerThread[OUT]: Put tuple (1) on H1
+
+	- read tuple
+	machine1 	linda>rd (1)
+				Client[RD]: Read tuple on H1
+
+	machine2 	ServerThread[RD]: Read tuple (1) on H1
+
+	- get tuple
+	machine1 	linda>in (1)
+				Client[IN]: Get tuple = (1) on H1
+
+	machine2 	ServerThread[IN]: Remove tuple (1) on H1
+
+
+	- read tuple with type match
+	machine1 	linda>rd (?i:int)      
+				Client[RDBROADCAST]: Read tuple = (1) on H1
+
+	machine2	linda>ServerThread[RDBROADCAST]: Read tuple = (1) on H1
+
+	- get tuple with type match
+	machine1 	linda>in (?i:int)
+				Client[IN]: Get tuple = (1) on H1
+
+	machine2 	ServerThread[IN]: Remove tuple (1) on H1
+
+	- display hosts in Linda distributed system
+	machine1/machine2 	linda>n
+						{1=H1, 0=H0}
+
+	- display tuples stored in the host
+	machine1	linda>t
+				{}
+
+	machine2	linda>t
+				{(1)=2, ("aaa")=1}
+
+
+- 3 - Error Handling
+	There are 3 types of error: 
+
+1> command error: 
+	if the command is not included in add, out, rd, in, n, and t, the system will prompt again
+
+2> network connection error
+	if the host name, IP or port is not correct, the sytem will cancel the request and prompt again
+
+3> tuple input error: 
+	if the tuple format is not correct, the system will prompt again
+
+
+- 4 - Features
+
+1>	Automatic available port finding
+
+2>	Display output on both server and client window
+
+3>	Compiling without warning messages
+
+4>	MD5Sume used to implement tuple space
+
+5> 	add t and n command
+	- t: output tuple space stored in the machine
+	- n: output all hosts info 
+
+
+- 5 - Modular design
+1>	P1:	programm main class
+	includes a server and a client
+
+2>	Server: listenning on the socket
+	creats new server threads whenever there is a new request from clients
+
+3>	Client: sending request
+	there are 2 types of request: unblocking and blocking
+
+4> 	Tuple:	Object stored in the distributed system
+
+5>	Host: host info
+	includs host name, host ID, host IP, host port
+
+6>	MessageBuilder: checking input, generating message and pass to client
+
+7>	InputOutputController : handling file operation. 
+	e.g. file creation and file serialization 
+
+
+- 6 - file/directory organizing
+
+1>	/tmp/yliu3/linda/<host_name>/nets.txt
+
+2> 	/tmp/yliu3/linda/<host_name>/tuples.txt
