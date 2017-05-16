@@ -1,7 +1,7 @@
 # Linda
 Linda  is a distributed P2P system to provide a conceptually “global” tuple space which the remote process can access the matched tuples in tuple space.
 
-Vedio: https://youtu.be/3SyZIjMPSLA
+Video: https://youtu.be/3SyZIjMPSLA
 
 
 # System Requirement
