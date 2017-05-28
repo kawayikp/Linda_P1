@@ -6,16 +6,26 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class InputOutputController {
-    public static void generateFile(String[] paths, String path, String netsFile, String tuplesFile) throws IOException {
+    public static void generateFile(String[] paths, String path, String netsFile, String tuplesFile) {
         File dir = new File(path);
         dir.mkdirs();
         dir = new File(path + netsFile); // if exists, will do nothing
-        dir.createNewFile();
+        try {
+            dir.createNewFile();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         dir = new File(path);
         dir.mkdirs();
         dir = new File(path + tuplesFile); // if exists, will do nothing
-        dir.createNewFile();
+        try {
+            dir.createNewFile();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         for (int i = 0; i < paths.length; i++) {
             dir = new File(paths[i]);

@@ -22,7 +22,7 @@ public class P1 {
     static String netsFile;
     static String tuplesFile;
 
-    public static void initialization(String hostName) throws IOException {
+    public static void initialization(String hostName) {
         P1.hostName = hostName;
         ID = IDS++;
 
@@ -44,12 +44,18 @@ public class P1 {
         InputOutputController.serialize(tuples, path + tuplesFile);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException { // P1 host0
+    public static void main(String[] args) { // P1 host0
         P1.initialization(args[0]);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             System.out.print("linda>");
-            String commandLine = br.readLine().trim();
+            String commandLine = "";
+            try {
+                commandLine = br.readLine().trim();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             if (commandLine.length() == 0) {
                 continue;
             } else if (commandLine.equals("t")) {

@@ -18,7 +18,7 @@ public class Client {
         messageReceive = new LinkedList<>();
     }
 
-    public void run(List<Message> messageSend) throws InterruptedException {
+    public void run(List<Message> messageSend) {
         MessageType type = messageSend.get(0).getType();
         switch (type) {
         case ASKNAME:
@@ -37,7 +37,7 @@ public class Client {
         }
     }
 
-    private void sendUnblockingMessage(List<Message> messageSend) throws InterruptedException {
+    private void sendUnblockingMessage(List<Message> messageSend) {
         int n = messageSend.size();
         Thread[] threads = new Thread[n];
 
@@ -53,7 +53,12 @@ public class Client {
 
         for (Thread t : threads) {
             t.start();
-            t.join();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         //
         //        System.out.println("Client[]: " + n + " sent");
@@ -74,7 +79,7 @@ public class Client {
         }
     }
 
-    private void sendBlockingMessage(List<Message> messageSend) throws InterruptedException {
+    private void sendBlockingMessage(List<Message> messageSend) {
         int n = messageSend.size();
         Thread[] threads = new Thread[n];
         boolean finished = false;
@@ -92,7 +97,12 @@ public class Client {
 
             for (int i = 0; i < n; i++) {
                 threads[i].start();
-                threads[i].join();
+                try {
+                    threads[i].join();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
 
             //            System.out.println("Client[]: " + n + " sent");
@@ -130,7 +140,7 @@ public class Client {
     }
 
     // check hosts information, if no duplicated host name, update nets of all hosts, otherwise cancel the request and input again
-    private void askNameHelper() throws InterruptedException {
+    private void askNameHelper() {
         List<Message> messageSend = new ArrayList<>();
         Set<String> nameSet = new HashSet<>();
         nameSet.add(P1.hostName);
@@ -195,7 +205,7 @@ public class Client {
         System.out.println("Read tuple = " + rm.getTuple() + " on " + rm.getHostName());
     }
 
-    private void inbroadcastHelper() throws InterruptedException {
+    private void inbroadcastHelper() {
         INMessage im = (INMessage) (messageReceive.poll()); 
         List<Message> list = new ArrayList<>();
         Integer ID = im.getID();

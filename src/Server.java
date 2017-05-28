@@ -7,10 +7,19 @@ public class Server implements Runnable{
     static ServerSocket serverSocket;
 
 
-    public Server() throws IOException {
-        serverSocket = new ServerSocket(0);
+    public Server() {
+        try {
+            serverSocket = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         port = serverSocket.getLocalPort();
-        IP = InetAddress.getLocalHost().getHostAddress();
+        try {
+            IP = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         System.out.println(P1.hostName + " at " + IP + " : " + port); 
     }
 
